@@ -22,7 +22,20 @@ jobs:
 
     - name: Create an IAM Role for GitHub Actions and its trust policy
       run: |
-        aws cloudformation create-stack --stack-name MyIAMRoleStack --template-body file://cloudfformation/CloudFormationFullAccess.yaml --capabilities CAPABILITY_NAMED_IAM
+        STACK_NAME="MyIAMRoleStack"
+        TEMPLATE_FILE="file://cloudfformation/CloudFormationFullAccess.yaml"
+        REGION=${{ secrets.AWS_REGION }}
+
+          # Check if stack exists
+          STACK_EXISTS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --region $REGION 2>&1 || echo "does not exist")
+
+          if [[ $STACK_EXISTS == *"does not exist"* ]]; then
+            echo "Stack does not exist. Creating stack..."
+            aws cloudformation create-stack --stack-name $STACK_NAME --template-body $TEMPLATE_FILE --capabilities CAPABILITY_NAMED_IAM --region $REGION
+          else
+            echo "Stack exists. Updating stack..."
+            aws cloudformation update-stack --stack-name $STACK_NAME --template-body $TEMPLATE_FILE --capabilities CAPABILITY_NAMED_IAM --region $REGION
+          fi
 
     - name: Deploy EKS using CloudFormation
       run: |
