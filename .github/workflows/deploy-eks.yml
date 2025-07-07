@@ -43,7 +43,6 @@ jobs:
         echo "Stack $STACK_NAME deletion completed."  
 
     - name: Deploy EKS using CloudFormation
-      if: env.exists == 'true'
       run: |
         aws cloudformation deploy \
           --template-file cloudfformation/EKS_setup.yaml \
