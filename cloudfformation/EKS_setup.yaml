@@ -1,5 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: EKS Cluster with 2 Worker Nodes with maximum capacity 
+Description: EKS Cluster with 2 Worker Nodes with maximum capacity
+
 Resources:
   VPC:
     Type: AWS::EC2::VPC
@@ -13,7 +14,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: 10.0.1.0/24
-      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      AvailabilityZone: !Select [0, !GetAZs '']
       Tags:
         - Key: kubernetes.io/cluster/MyEKSCluster
           Value: owned
@@ -23,7 +24,7 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       CidrBlock: 10.0.2.0/24
-      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+      AvailabilityZone: !Select [1, !GetAZs '']
       Tags:
         - Key: kubernetes.io/cluster/MyEKSCluster
           Value: owned
@@ -73,8 +74,8 @@ Resources:
           - !Ref PrivateSubnet2
         SecurityGroupIds:
           - !Ref SecurityGroup
-    Version: "1.33"
-  
+      Version: "1.33"
+
   LaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
     Properties:
