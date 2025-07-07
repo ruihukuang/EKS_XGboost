@@ -18,7 +18,11 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Create an IAM Role for GitHub Actions and its trust policy
+      run: |
+        aws cloudformation create-stack --stack-name MyIAMRoleStack --template-body file://cloudfformation/CloudFormationFullAccess.yaml --capabilities CAPABILITY_NAMED_IAM
 
     - name: Deploy EKS using CloudFormation
       run: |
