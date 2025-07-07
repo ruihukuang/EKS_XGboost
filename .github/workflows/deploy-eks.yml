@@ -27,6 +27,6 @@ jobs:
     - name: Deploy EKS using CloudFormation
       run: |
         aws cloudformation deploy \
-          --template-file eks-cluster.yaml \
+          --template-file cloudfformation/EKS_setup.yaml \
           --stack-name MyEKSCluster \
           --capabilities CAPABILITY_NAMED_IAM
