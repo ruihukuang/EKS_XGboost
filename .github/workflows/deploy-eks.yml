@@ -34,9 +34,7 @@ jobs:
             aws cloudformation create-stack --stack-name $STACK_NAME --template-body $TEMPLATE_FILE --capabilities CAPABILITY_NAMED_IAM --region $REGION
           else
             echo "Stack exists. Delete IAM role and its stack before creating a new stack..."
-            aws iam list-attached-role-policies --role-name GithubCICDRole --query 'AttachedPolicies[*].PolicyArn' --output text | xargs -n 1 aws iam detach-role-policy --role-name GithubCICDRole --policy-arn
-            aws iam delete-role --role-name GithubCICDRole
-            aws cloudformation describe-stacks --stack-name $STACK_NAME --region $REGION
+            aws cloudformation delete-stack --stack-name $STACK_NAME --region $REGION
             aws cloudformation create-stack --stack-name $STACK_NAME --template-body $TEMPLATE_FILE --capabilities CAPABILITY_NAMED_IAM --region $REGION
           fi
 
