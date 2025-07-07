@@ -34,7 +34,8 @@ jobs:
             aws cloudformation create-stack --stack-name $STACK_NAME --template-body $TEMPLATE_FILE --capabilities CAPABILITY_NAMED_IAM --region $REGION
           else
             echo "Stack exists. Updating stack..."
-            aws cloudformation update-stack --stack-name $STACK_NAME --template-body $TEMPLATE_FILE --capabilities CAPABILITY_NAMED_IAM --region $REGION
+            aws cloudformation describe-stacks --stack-name $STACK_NAME --region $REGION
+            aws cloudformation create-stack --stack-name $STACK_NAME --template-body $TEMPLATE_FILE --capabilities CAPABILITY_NAMED_IAM --region $REGION
           fi
 
     - name: Deploy EKS using CloudFormation
