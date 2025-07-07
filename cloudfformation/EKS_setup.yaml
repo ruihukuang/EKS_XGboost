@@ -83,9 +83,24 @@ Resources:
         InstanceType: t3.micro
         UserData:
           Fn::Base64: !Sub |
-            #!/bin/bash
+            MIME-Version: 1.0
+            Content-Type: multipart/mixed; boundary="==MYBOUNDARY=="
+
+            --==MYBOUNDARY==
+            Content-Type: text/cloud-config; charset="us-ascii"
+
+            #cloud-config
+            cloud_final_modules:
+            - [scripts-user, always]
+
+            --==MYBOUNDARY==
+            Content-Type: text/x-shellscript; charset="us-ascii"
+
+             #!/bin/bash
             set -o xtrace
             /etc/eks/bootstrap.sh MyEKSCluster
+
+            --==MYBOUNDARY==--
 
   NodeGroup:
     Type: AWS::EKS::Nodegroup
