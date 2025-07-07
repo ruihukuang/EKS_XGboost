@@ -48,3 +48,20 @@ jobs:
           --template-file cloudfformation/EKS_setup.yaml \
           --stack-name MyEKSCluster \
           --capabilities CAPABILITY_NAMED_IAM
+
+    - name: Wait for EKS Cluster to be Active
+      run: |
+        CLUSTER_STATUS=$(aws eks describe-cluster --name MyEKSCluster --query "cluster.status" --output text)
+        while [ "$CLUSTER_STATUS" != "ACTIVE" ]; do
+          echo "Waiting for EKS Cluster to become ACTIVE..."
+          sleep 30
+          CLUSTER_STATUS=$(aws eks describe-cluster --name MyEKSCluster --query "cluster.status" --output text)
+        done
+        echo "EKS Cluster is ACTIVE."
+
+    - name: Update EKS Cluster Endpoint Access
+      run: |
+        aws eks update-cluster-config \
+          --region ${{ secrets.AWS_REGION }} \
+          --name MyEKSCluster \
+          --resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
