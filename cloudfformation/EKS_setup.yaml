@@ -74,9 +74,6 @@ Resources:
         SecurityGroupIds:
           - !Ref SecurityGroup
     Version: "1.32"
-      # Ensure the cluster endpoint is private
-    EndpointPublicAccess: false
-    EndpointPrivateAccess: true
   
   LaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
