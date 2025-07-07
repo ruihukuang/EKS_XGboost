@@ -33,9 +33,7 @@ jobs:
             echo "Stack does not exist. Creating stack..."
             aws cloudformation create-stack --stack-name $STACK_NAME --template-body $TEMPLATE_FILE --capabilities CAPABILITY_NAMED_IAM --region $REGION
           else
-            echo "Stack exists. Delete IAM role and its stack before creating a new stack..."
-            aws cloudformation delete-stack --stack-name $STACK_NAME --region $REGION
-            aws cloudformation create-stack --stack-name $STACK_NAME --template-body $TEMPLATE_FILE --capabilities CAPABILITY_NAMED_IAM --region $REGION
+            echo "Stack exist. Next step..."
           fi
 
     - name: Deploy EKS using CloudFormation
