@@ -42,16 +42,6 @@ jobs:
         aws cloudformation wait stack-delete-complete --stack-name $STACK_NAME
         echo "Stack $STACK_NAME deletion completed."  
 
-    - name: Check if Stack Exists after deletion
-      id: check_stack_1
-      run: |
-        STACK_NAME="MyEKSCluster"
-        if aws cloudformation describe-stacks --stack-name $STACK_NAME; then
-          echo "exists=true" >> $GITHUB_ENV
-        else
-          echo "exists=false" >> $GITHUB_ENV
-        fi
-
     - name: Deploy EKS using CloudFormation
       if: env.exists == 'true'
       run: |
