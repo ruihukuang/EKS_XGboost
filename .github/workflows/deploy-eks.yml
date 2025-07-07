@@ -1,0 +1,32 @@
+name: Deploy EKS Cluster
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Create an IAM Role for GitHub Actions and its trust policy
+      run: |
+        aws cloudformation create-stack --stack-name MyIAMRoleStack --template-body file://cloudfformation/CloudFormationFullAccess.yaml --capabilities CAPABILITY_NAMED_IAM
+
+    - name: Deploy EKS using CloudFormation
+      run: |
+        aws cloudformation deploy \
+          --template-file eks-cluster.yaml \
+          --stack-name MyEKSCluster \
+          --capabilities CAPABILITY_NAMED_IAM
