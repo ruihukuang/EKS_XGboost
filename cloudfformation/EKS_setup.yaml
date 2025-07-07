@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: EKS Cluster with 5 Worker Nodes
+Description: EKS Cluster with 2 Worker Nodes with maximum capacity 
 Resources:
   VPC:
     Type: AWS::EC2::VPC
@@ -7,33 +7,53 @@ Resources:
       CidrBlock: 10.0.0.0/16
       EnableDnsSupport: true
       EnableDnsHostnames: true
+
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
       CidrBlock: 10.0.1.0/24
       AvailabilityZone: !Select [ 0, !GetAZs '' ]
+
   PrivateSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
       CidrBlock: 10.0.2.0/24
       AvailabilityZone: !Select [ 1, !GetAZs '' ]
+
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: EKS Security Group
       VpcId: !Ref VPC
+
+  EKSClusterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [eks.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+        - arn:aws:iam::aws:policy/AmazonEKSServicePolicy
+
   EKSCluster:
     Type: AWS::EKS::Cluster
     Properties:
       Name: MyEKSCluster
+      RoleArn: !GetAtt EKSClusterRole.Arn
       ResourcesVpcConfig:
         SubnetIds:
           - !Ref PrivateSubnet1
           - !Ref PrivateSubnet2
         SecurityGroupIds:
           - !Ref SecurityGroup
+
   NodeGroup:
     Type: AWS::EKS::Nodegroup
     Properties:
@@ -43,12 +63,13 @@ Resources:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
       ScalingConfig:
-        DesiredSize: 2
+        DesiredSize: 1
         MaxSize: 2
-        MinSize: 2
+        MinSize: 1
       InstanceTypes:
         - t3.micro  # Smallest instance type
       AmiType: AL2_x86_64
+
   NodeInstanceRole:
     Type: AWS::IAM::Role
     Properties:
