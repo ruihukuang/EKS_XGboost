@@ -20,7 +20,40 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    - name: Check if Stack Exists
+      id: check_stack
+      run: |
+        STACK_NAME="MyEKSCluster"
+        aws cloudformation describe-stacks --stack-name $STACK_NAME || echo "Stack does not exist" > stack_status.txt
+
+    - name: Delete Stack if Exists
+      if: steps.check_stack.outputs.stack_status != 'Stack does not exist'
+      run: |
+        STACK_NAME="MyEKSCluster"
+        echo "Deleting stack $STACK_NAME..."
+        aws cloudformation delete-stack --stack-name $STACK_NAME
+        echo "Stack $STACK_NAME deletion initiated."
+
+    - name: Wait for Stack Deletion to Complete
+      if: steps.check_stack.outputs.stack_status != 'Stack does not exist'
+      run: |
+        STACK_NAME="MyEKSCluster"
+        echo "Waiting for stack $STACK_NAME deletion to complete..."
+        aws cloudformation wait stack-delete-complete --stack-name $STACK_NAME
+        echo "Stack $STACK_NAME deletion completed."  
+
+    - name: Check if Stack Exists after deletion
+      id: check_stack_1
+      run: |
+        STACK_NAME="MyEKSCluster"
+        if aws cloudformation describe-stacks --stack-name $STACK_NAME; then
+          echo "exists=true" >> $GITHUB_ENV
+        else
+          echo "exists=false" >> $GITHUB_ENV
+        fi
+
     - name: Deploy EKS using CloudFormation
+      if: env.exists == 'true'
       run: |
         aws cloudformation deploy \
           --template-file cloudfformation/EKS_setup.yaml \
