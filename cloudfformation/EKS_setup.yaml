@@ -98,8 +98,6 @@ Resources:
         DesiredSize: 1
         MaxSize: 2
         MinSize: 1
-      InstanceTypes:
-        - t3.micro  # Smallest instance type
       AmiType: AL2_x86_64
       LaunchTemplate:
         Id: !Ref LaunchTemplate
