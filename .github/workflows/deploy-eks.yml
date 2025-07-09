@@ -29,20 +29,10 @@ jobs:
     - name: Delete Stack if Exists
       if: steps.check_stack.outputs.stack_status != 'Stack does not exist'
       run: |
-        STACK_NAME="MyEKSCluster"
-        echo "Deleting stack $STACK_NAME..."
-        aws cloudformation delete-stack --stack-name $STACK_NAME
-        echo "Stack $STACK_NAME deletion initiated."
-
-    - name: Wait for Stack Deletion to Complete
-      if: steps.check_stack.outputs.stack_status != 'Stack does not exist'
-      run: |
-        STACK_NAME="MyEKSCluster"
-        echo "Waiting for stack $STACK_NAME deletion to complete..."
-        aws cloudformation wait stack-delete-complete --stack-name $STACK_NAME
-        echo "Stack $STACK_NAME deletion completed."  
-
+        echo "Keep the stack $STACK_NAME... and do nothing"
+ 
     - name: Deploy EKS using CloudFormation
+      if: steps.check_stack.outputs.stack_status == 'Stack does not exist'
       run: |
         aws cloudformation deploy \
           --template-file cloudfformation/EKS_setup.yaml \
