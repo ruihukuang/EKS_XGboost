@@ -32,7 +32,6 @@ jobs:
         echo "Keep the stack $STACK_NAME... and do nothing"
  
     - name: Deploy EKS using CloudFormation
-      if: steps.check_stack.outputs.stack_status == 'Stack does not exist'
       run: |
         aws cloudformation deploy \
           --template-file cloudfformation/EKS_setup.yaml \
