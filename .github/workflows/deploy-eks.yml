@@ -24,14 +24,20 @@ jobs:
       id: check_stack
       run: |
         STACK_NAME="MyEKSCluster"
-        aws cloudformation describe-stacks --stack-name $STACK_NAME || echo "Stack does not exist" > stack_status.txt
+        if aws cloudformation describe-stacks --stack-name $STACK_NAME > /dev/null 2>&1; then
+          echo "exists=true" >> $GITHUB_ENV
+        else
+          echo "exists=false" >> $GITHUB_ENV
+        fi
 
-    - name: Delete Stack if Exists
-      if: steps.check_stack.outputs.stack_status != 'Stack does not exist'
+    - name: Keep the Stack if Exists
+      if: env.exists == 'true'
       run: |
+        STACK_NAME="MyEKSCluster"
         echo "Keep the stack $STACK_NAME... and do nothing"
  
     - name: Deploy EKS using CloudFormation
+      if: env.exists == 'false'
       run: |
         aws cloudformation deploy \
           --template-file cloudfformation/EKS_setup.yaml \
