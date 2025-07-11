@@ -60,6 +60,6 @@ jobs:
     - name: Update EKS Cluster Endpoint Access
       run: |
         aws eks update-cluster-config \
-          --region ${{ secrets.AWS_REGION }} \
+          --region ${{ secrets.REGION }} \
           --name MyEKSCluster \
           --resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
