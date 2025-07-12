@@ -184,8 +184,8 @@ Resources:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
       ScalingConfig:
-        DesiredSize: 3
-        MaxSize: 4
+        DesiredSize: 8
+        MaxSize: 9
         MinSize: 1
       LaunchTemplate:
         Id: !Ref LaunchTemplate
