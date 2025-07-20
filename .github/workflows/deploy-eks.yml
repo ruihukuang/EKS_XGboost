@@ -20,22 +20,6 @@ jobs:
       with:
          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.ROLE_NAME }}
          aws-region: ${{ secrets.REGION }}
-
-    - name: Check if Stack Exists
-      id: check_stack
-      run: |
-        STACK_NAME="MyEKSCluster"
-        if aws cloudformation describe-stacks --stack-name $STACK_NAME > /dev/null 2>&1; then
-          echo "exists=true" >> $GITHUB_ENV
-        else
-          echo "exists=false" >> $GITHUB_ENV
-        fi
-
-    - name: Keep the Stack if Exists
-      if: env.exists == 'true'
-      run: |
-        STACK_NAME="MyEKSCluster"
-        echo "Keep the stack $STACK_NAME... and do nothing"
  
     - name: Deploy EKS using CloudFormation
       if: env.exists == 'false'
