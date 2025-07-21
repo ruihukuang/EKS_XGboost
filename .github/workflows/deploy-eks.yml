@@ -22,7 +22,6 @@ jobs:
          aws-region: ${{ secrets.REGION }}
  
     - name: Deploy EKS using CloudFormation
-      if: env.exists == 'false'
       run: |
         aws cloudformation deploy \
           --template-file cloudfformation/EKS_setup.yaml \
