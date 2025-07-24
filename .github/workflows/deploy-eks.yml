@@ -20,6 +20,20 @@ jobs:
       with:
          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.ROLE_NAME }}
          aws-region: ${{ secrets.REGION }}
+
+    - name: Check CloudFormation stack status
+      id: check_status
+      run: |
+        STACK_STATUS=$(aws cloudformation describe-stacks --stack-name MyEKSCluster --query "Stacks[0].StackStatus" --output text)
+        echo "Stack status: $STACK_STATUS"
+        echo "::set-output name=status::$STACK_STATUS"
+
+    - name: Delete CloudFormation stack
+      if: steps.check_status.outputs.status != 'CREATE_COMPLETE'
+      run: |
+        echo "Deleting stack because status is ${{ steps.check_status.outputs.status }}"
+        aws cloudformation delete-stack --stack-name MyEKSCluster
+        aws cloudformation wait stack-delete-complete --stack-name MyEKSCluster
  
     - name: Deploy EKS using CloudFormation
       run: |
