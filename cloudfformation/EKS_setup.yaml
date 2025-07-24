@@ -153,7 +153,7 @@ Resources:
     Type: AWS::EC2::LaunchTemplate
     Properties:
       LaunchTemplateData:
-        InstanceType: t3.micro
+        InstanceType: r5. large
         UserData:
           Fn::Base64: !Sub |
             MIME-Version: 1.0
@@ -184,8 +184,8 @@ Resources:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
       ScalingConfig:
-        DesiredSize: 32
-        MaxSize: 34
+        DesiredSize: 2
+        MaxSize: 3
         MinSize: 1
       LaunchTemplate:
         Id: !Ref LaunchTemplate
