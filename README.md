@@ -2,7 +2,7 @@
 
 Context:
 
-This repo is to deploy a EKS cluster in private subnets in VPC with a Nat gateway and an internet gateway. This deployment is using cloudformation and github action to automate the deployment of CloudFormation templates, enabling continuous integration and continuous deployment (CI/CD) pipelines. This EKS cluster is created to run a gunicorn app which is created in https://github.com/ruihukuang/xgboost_model_docker_image.
+This repo is to deploy a EKS cluster in private subnets in VPC with a Nat gateway and an internet gateway. This deployment is using cloudformation and github action to automate the deployment of CloudFormation templates, enabling continuous integration and continuous deployment (CI/CD) pipelines. 
 
 result
 
